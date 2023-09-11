@@ -77,6 +77,20 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  -- prettier
+  'MunifTanjim/prettier.nvim',
+
+
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+    }
+  },
+
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
@@ -89,7 +103,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -113,7 +127,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -127,7 +141,8 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
+        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk,
+          { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
         vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
       end,
@@ -139,7 +154,8 @@ require('lazy').setup({
     'projekt0n/github-nvim-theme',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'github_dark_high_contrast'
+      vim.cmd.colorscheme 'github_dark_tritanopia'
+      vim.cmd.hi 'Normal guibg=NONE ctermbg=NONE'
     end,
   },
 
@@ -206,8 +222,8 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.autoformat',
+  require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -215,7 +231,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]
@@ -227,8 +243,33 @@ vim.o.hlsearch = true
 
 -- Copilot settings
 vim.g.copilot_no_tab_map = true
-vim.g.copilot_filetypes = { 'markdown' }
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.g.copilot_filetypes = { markdown = true }
+
+-- harpoon settings
+vim.keymap.set('n', 'hh', ':lua require("harpoon.ui").toggle_quick_menu()<cr>',
+  { noremap = true })
+
+vim.keymap.set('n', 'ha', ':lua require("harpoon.mark").add_file()<cr>',
+  { noremap = true })
+
+-- vim.keymap.set('n', '<leader>h1', ':lua require("harpoon.ui").nav_file(1)<cr>',
+--   { noremap = true })
+-- vim.keymap.set('n', '<leader>h2', ':lua require("harpoon.ui").nav_file(2)<cr>',
+--   { noremap = true })
+-- vim.keymap.set('n', '<leader>h3', ':lua require("harpoon.ui").nav_file(3)<cr>',
+--   { noremap = true })
+-- vim.keymap.set('n', '<leader>h4', ':lua require("harpoon.ui").nav_file(4)<cr>',
+--   { noremap = true })
+
+function mapHarpoonKeys()
+  for i = 1, 4 do
+    vim.keymap.set('n', 'h' .. i, ':lua require("harpoon.ui").nav_file(' .. i .. ')<cr>',
+      { noremap = true })
+  end
+end
+
+mapHarpoonKeys()
 
 -- Make line numbers default
 vim.wo.number = true
@@ -277,9 +318,20 @@ vim.o.termguicolors = true
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
+-- Map escape to leave insert mode
+function mapExitKeys(input)
+  vim.keymap.set('i', input, '<Esc>', { silent = true })
+end
+
+mapExitKeys('jk')
+mapExitKeys('kj')
+mapExitKeys('jj')
+
+
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -330,7 +382,11 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'astro'},
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'astro', 'css',
+    'javascript', 'json', 'html', 'yaml', 'toml', 'bash' },
+  autotag = {
+    enable = true
+  },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -429,6 +485,9 @@ local on_attach = function(_, bufnr)
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
+  -- Neotree
+  nmap('<leader>tt', ":Neotree<cr>", 'Opens Neotree')
+
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
@@ -459,6 +518,8 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
   astro = {},
+  emmet_ls = {},
+  jsonls = {},
 
   lua_ls = {
     Lua = {
@@ -540,6 +601,3 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
