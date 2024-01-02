@@ -71,6 +71,7 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
+
   -- GH Copilot
   'github/copilot.vim',
 
@@ -109,6 +110,9 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
+  {
+    'wellle/context.vim',
+  },
 
   {
     -- Autocompletion
@@ -127,7 +131,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',                opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -175,19 +179,21 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
-  },
+  -- {
+  --   -- Add indentation guides even on blank lines
+  --   'lukas-reineke/indent-blankline.nvim',
+  --   -- Enable `lukas-reineke/indent-blankline.nvim`
+  --   -- See `:help indent_blankline.txt`
+  --   opts = {
+  --     char = '┊',
+  --     show_trailing_blankline_indent = false,
+  --   },
+  -- },
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
+
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',               opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -246,6 +252,15 @@ vim.g.copilot_no_tab_map = true
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 vim.g.copilot_filetypes = { markdown = true }
 
+-- Obsidian Nvim settings
+-- vim.keymap.set("n", "gf", function()
+--   if require("obsidian").util.cursor_on_markdown_link() then
+--     return "<cmd>ObsidianFollowLink<CR>"
+--   else
+--     return "gf"
+--   end
+-- end, { noremap = false, expr = true })
+
 -- harpoon settings
 vim.keymap.set('n', 'hh', ':lua require("harpoon.ui").toggle_quick_menu()<cr>',
   { noremap = true })
@@ -270,6 +285,10 @@ function mapHarpoonKeys()
 end
 
 mapHarpoonKeys()
+
+-- @SECTION: General Settings
+
+vim.o.scrolloff = 8
 
 -- Make line numbers default
 vim.wo.number = true
@@ -371,7 +390,7 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
-vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
+vim.keymap.set('n', '<leader>gF', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
@@ -383,7 +402,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'astro', 'css',
-    'javascript', 'json', 'html', 'yaml', 'toml', 'bash' },
+    'javascript', 'json', 'html', 'yaml', 'toml', 'bash', 'markdown', 'markdown_inline', 'graphql', 'make', 'prisma' },
   autotag = {
     enable = true
   },
