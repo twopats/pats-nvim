@@ -70,6 +70,7 @@ require('lazy').setup({
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+  'twopats/iris.nvim',
 
 
   -- GH Copilot
@@ -252,14 +253,6 @@ vim.g.copilot_no_tab_map = true
 vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 vim.g.copilot_filetypes = { markdown = true }
 
--- Obsidian Nvim settings
--- vim.keymap.set("n", "gf", function()
---   if require("obsidian").util.cursor_on_markdown_link() then
---     return "<cmd>ObsidianFollowLink<CR>"
---   else
---     return "gf"
---   end
--- end, { noremap = false, expr = true })
 
 -- harpoon settings
 vim.keymap.set('n', 'hh', ':lua require("harpoon.ui").toggle_quick_menu()<cr>',
@@ -267,15 +260,6 @@ vim.keymap.set('n', 'hh', ':lua require("harpoon.ui").toggle_quick_menu()<cr>',
 
 vim.keymap.set('n', 'ha', ':lua require("harpoon.mark").add_file()<cr>',
   { noremap = true })
-
--- vim.keymap.set('n', '<leader>h1', ':lua require("harpoon.ui").nav_file(1)<cr>',
---   { noremap = true })
--- vim.keymap.set('n', '<leader>h2', ':lua require("harpoon.ui").nav_file(2)<cr>',
---   { noremap = true })
--- vim.keymap.set('n', '<leader>h3', ':lua require("harpoon.ui").nav_file(3)<cr>',
---   { noremap = true })
--- vim.keymap.set('n', '<leader>h4', ':lua require("harpoon.ui").nav_file(4)<cr>',
---   { noremap = true })
 
 function mapHarpoonKeys()
   for i = 1, 4 do
@@ -512,7 +496,7 @@ local on_attach = function(_, bufnr)
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Neotree
-  nmap('<leader>tt', ":Neotree<cr>", 'Opens Neotree')
+  nmap('tt', ":Neotree<cr>", 'Opens Neotree')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
