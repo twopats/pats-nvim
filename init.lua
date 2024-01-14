@@ -393,7 +393,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'astro', 'css',
-    'javascript', 'json', 'html', 'yaml', 'toml', 'bash', 'markdown', 'markdown_inline', 'graphql', 'make', 'prisma' },
+    'javascript', 'json', 'html', 'yaml', 'toml', 'bash', 'markdown', 'markdown_inline', 'graphql', 'make', 'prisma', 'dot' },
   autotag = {
     enable = true
   },
